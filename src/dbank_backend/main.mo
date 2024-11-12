@@ -1,7 +1,8 @@
 import Debug "mo:base/Debug"; // import 'Debug' library from Motoko base library
+import Int "mo:base/Int";
 
 actor DBank {
-  var currentValue = 300; // instantiate and assing a variable
+  var currentValue = 300; // instantiate and assing a variable (data type is inferred to be 'Nat' since it is a positive number)
   currentValue := 100; // re-assign value to variable
 
   let id = 2847590394; // 'let' keyword is similar to JS 'const'
@@ -10,7 +11,7 @@ actor DBank {
 
   /* 
   
-  function below is an example of a 'private function'- only available within an actor's ('DBank') context
+  function below is an example of a 'private function'- only available within an actor's ('DBank') context:
   
     func topUp() {
     currentValue += 1;
@@ -26,7 +27,7 @@ actor DBank {
     Debug.print(debug_show(currentValue));
   };
 
-  if an input parameter is specified, the parameter type must also be specified i.e. 'amount: Nat' --> Nat meaning natural number
+  if an input parameter is specified, the parameter type must also be specified i.e. 'amount: Nat' --> 'Nat' meaning natural number
   */
   public func topUp(amount: Nat) {
     currentValue += amount;
@@ -34,7 +35,11 @@ actor DBank {
   };
 
   public func withdraw(amount: Nat) {
+    let tempValue: Int = currentValue - amount;
+    if (tempValue >= 0) {
     currentValue -= amount;
     Debug.print(debug_show(currentValue));
+    }
+    else {Debug.print("Amount too large currentValue less than zero")} // quotes encapsulating a string must be "" NOT ''
   }
 } 
