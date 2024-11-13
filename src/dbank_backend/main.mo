@@ -41,5 +41,13 @@ actor DBank {
     Debug.print(debug_show(currentValue));
     }
     else {Debug.print("Amount too large currentValue less than zero")} // quotes encapsulating a string must be "" NOT ''
-  }
+  };
+
+  /* when a function has a specified output, the function must be asynchronous.
+  query functions are intended to be read-only, and therefore are much faster than
+  examples above */
+  public query func checkBalance(): async Nat  {
+    return currentValue;
+  };
+
 } 
