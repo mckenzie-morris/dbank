@@ -1,16 +1,20 @@
 import Debug "mo:base/Debug"; // import 'Debug' library from Motoko base library
 import Int "mo:base/Int";
+import Time "mo:base/Time";
+import Float "mo:base/Float";
 
 actor DBank {
+stable var startTime : Int = Time.now();
+Debug.print(debug_show(startTime));
+
+
+  /*Adding the keyword 'stable' will persist data across deployments. Without
+    the 'stable' keyword, the var defaults to 'flexible' (non-persisted): */
+    stable var currentValue: Float = 300;
 
   /* instantiate and assign a variable (data type is inferred to be 
-  'Nat' since it is a positive number) */
-  var currentValue = 300;
-  
-
-  /* Adding the keyword 'stable' will persist data across deployments. Without
-    the 'stable' keyword, the var defaults to 'flexible' (non-persisted):
-    stable var currentValue: Nat = 300;
+    'Nat' since it is a positive number) 
+    var currentValue = 300;
   
     re-assign value to variable:
     currentValue := 100;
@@ -46,13 +50,13 @@ actor DBank {
 
   /*   if an input parameter is specified, the parameter type must also be specified 
   i.e. 'amount: Nat' --> 'Nat' meaning natural number */
-  public func topUp(amount: Nat) {
+  public func topUp(amount: Float) {
     currentValue += amount;
     Debug.print(debug_show(currentValue));
   };
 
-  public func withdraw(amount: Nat) {
-    let tempValue: Int = currentValue - amount;
+  public func withdraw(amount: Float) {
+    let tempValue: Float = currentValue - amount;
     if (tempValue >= 0) {
     currentValue -= amount;
     Debug.print(debug_show(currentValue));
@@ -64,8 +68,27 @@ actor DBank {
   /* when a function has a specified output, the function must be asynchronous.
   query functions are intended to be read-only, and therefore are much faster than
   examples above */
-  public query func checkBalance(): async Nat  {
+  public query func checkBalance(): async Float  {
     return currentValue;
   };
 
+  /* Compound interest formula:
+  
+    A=P(1 + r/n)^nt 
+    
+    A	=	final amount
+    P	=	initial principal balance
+    r	=	interest rate
+    n	=	number of times interest applied per time period
+    t	=	number of time periods elapsed
+  
+  */
+  public func compound() {
+    let currentTime = Time.now();
+    let timeElapsedNS = currentTime - startTime;
+    // convert time elapsed in nanoseconds to seconds
+    let timeElapsedS = timeElapsedNS / 1000000000;
+    currentValue := currentValue * (1.01 ** Float.fromInt(timeElapsedS));
+    startTime := currentTime;
+  }
 } 
