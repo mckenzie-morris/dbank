@@ -5,13 +5,16 @@ import Float "mo:base/Float";
 
 actor DBank {
 stable var startTime : Int = Time.now();
+// 🚩🚩🚩 uncomment line below and; restart dfx, and redeploy to reset balance 🚩🚩🚩
+// startTime := Time.now();
 Debug.print(debug_show(startTime));
 
 
   /*Adding the keyword 'stable' will persist data across deployments. Without
     the 'stable' keyword, the var defaults to 'flexible' (non-persisted): */
     stable var currentValue: Float = 300;
-
+    // 🚩🚩🚩 uncomment line below and; restart dfx, and redeploy to reset balance 🚩🚩🚩
+    // currentValue := 100;
   /* instantiate and assign a variable (data type is inferred to be 
     'Nat' since it is a positive number) 
     var currentValue = 300;
